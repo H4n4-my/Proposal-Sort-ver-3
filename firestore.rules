@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isValidTenderEvaluation(data) {
+      return data.id is string
+        && data.title is string
+        && data.title.size() > 0
+        && data.title.size() <= 200
+        && data.refCode is string
+        && data.refCode.size() <= 100
+        && data.currency is string
+        && data.currency.size() <= 10
+        && data.savedAt is string
+        && data.projectData is map;
+    }
+
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    match /quotationLinks/{linkId} {
+      allow read, write: if true;
+    }
+
+    match /tenderEvaluations/{evaluationId} {
+      allow read: if true;
+      allow create: if isValidTenderEvaluation(request.resource.data)
+        && request.resource.data.id == evaluationId;
+      allow update: if isValidTenderEvaluation(request.resource.data)
+        && request.resource.data.id == resource.data.id;
+      allow delete: if true;
+    }
+
+    match /test/{testId} {
+      allow read, write: if true;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

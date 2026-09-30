@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account profile under Media Prima Berhad organization.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth user ID" },
+        "email": { "type": "string", "description": "Corporate or user email address" },
+        "displayName": { "type": "string", "description": "Full name or display name" },
+        "organization": { "type": "string", "description": "Company/subsidiary name, e.g. Media Prima Berhad" },
+        "department": { "type": "string", "description": "Department such as Procurement, IT Ops, Finance" },
+        "createdAt": { "type": "string", "description": "ISO timestamp of creation" }
+      },
+      "required": ["uid", "email"]
+    },
+    "TenderEvaluation": {
+      "title": "TenderEvaluation",
+      "description": "A saved corporate tender proposal evaluation and benchmark record with links.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier for evaluation" },
+        "title": { "type": "string", "description": "Title of the tender project" },
+        "refCode": { "type": "string", "description": "Reference code for the tender" },
+        "currency": { "type": "string", "description": "Currency used in evaluation (e.g. RM, USD)" },
+        "targetVolume": { "type": "number", "description": "Estimated monthly print volume" },
+        "fleetSize": { "type": "number", "description": "Total units in the office fleet" },
+        "optionsCount": { "type": "number", "description": "Count of options evaluated" },
+        "projectData": { "type": "object", "description": "Serialized TenderProject JSON object" },
+        "links": {
+          "type": "array",
+          "description": "Attached quotation documents, cloud drive links, or RFP reference URLs stored in Firebase"
+        },
+        "savedAt": { "type": "string", "description": "ISO timestamp when saved" },
+        "userId": { "type": "string", "description": "User identifier who created or modified the evaluation" },
+        "userEmail": { "type": "string", "description": "User email address" },
+        "organization": { "type": "string", "description": "Organization name" }
+      },
+      "required": ["id", "title", "refCode", "currency", "projectData", "savedAt"]
+    },
+    "QuotationLink": {
+      "title": "QuotationLink",
+      "description": "Document, PDF, cloud drive, or reference link stored in Firebase.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique link ID" },
+        "title": { "type": "string", "description": "Display name or file title" },
+        "url": { "type": "string", "description": "HTTP(S) URL or cloud drive document link" },
+        "vendor": { "type": "string", "description": "Vendor name related to link" },
+        "uploadedAt": { "type": "string", "description": "Timestamp or relative date" },
+        "addedBy": { "type": "string", "description": "User email or name" },
+        "organization": { "type": "string", "description": "Organization name" }
+      },
+      "required": ["id", "title", "url"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "UserProfile" },
+      "description": "User profiles for Media Prima Berhad personnel."
+    },
+    "/quotationLinks/{linkId}": {
+      "schema": { "$ref": "QuotationLink" },
+      "description": "Quotation URLs, PDF links, and tender documents stored directly in Firebase."
+    },
+    "/tenderEvaluations/{evaluationId}": {
+      "schema": { "$ref": "TenderEvaluation" },
+      "description": "Shared corporate tender evaluations and RFP document links accessible to Media Prima Berhad team members."
+    }
+  }
+}
